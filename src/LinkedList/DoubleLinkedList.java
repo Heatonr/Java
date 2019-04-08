@@ -17,7 +17,25 @@ public class DoubleLinkedList<E>  {
 		for (int i = 0; i < position; i++)
 			cursor = cursor.getNext();
 		return cursor.getData();
+	}
 
+	public void add(E item, int position) {
+		NodeD<E> placeHolderNode;
+
+		cursor = top;
+		for (int i = 0; i < position - 1; i++)
+			cursor = cursor.getNext();
+		if(cursor == null){
+			cursor = new NodeD<E>(item, null, null);
+			top = cursor;
+		}
+		else if (cursor.next == null) {
+			cursor.next = new NodeD<E>(item, null, cursor);
+		} else {
+			placeHolderNode = cursor.getNext();
+			cursor.next = new NodeD<E>(item, placeHolderNode, cursor);
+			placeHolderNode.prev = cursor.next;
+		}
 	}
 
 	public String toString() {
@@ -27,7 +45,6 @@ public class DoubleLinkedList<E>  {
 			retVal += cur.getData();
 			cur = cur.getNext();
 		}
-
 		return retVal;
 	}
 

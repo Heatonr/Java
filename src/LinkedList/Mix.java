@@ -1,14 +1,13 @@
 package LinkedList;
 
 import java.io.*;
-import java.util.Hashtable;
 import java.util.Scanner;
 
 public class Mix {
 
 	private DoubleLinkedList<Character> message;
 	private String undoCommands;
-	private Hashtable<Integer, DoubleLinkedList<Character>> clipBoards;
+	private NodeCB clipBoards;
 
 	private String userMessage;
 	private Scanner scan;
@@ -16,7 +15,7 @@ public class Mix {
 	public Mix() {
 		scan = new Scanner(System.in);
 		message = new DoubleLinkedList<Character>();
-		clipBoards = new Hashtable<Integer, DoubleLinkedList<Character>>();
+		clipBoards = new NodeCB();
 
 		undoCommands = "";
 	}
@@ -24,6 +23,9 @@ public class Mix {
 	public static void main(String[] args) {
 		Mix mix = new Mix();
 		mix.userMessage = args[0];
+		for(int i = 0; i < mix.userMessage.length(); i++){
+			mix.message.add(mix.userMessage.charAt(i), i);
+		}
 		System.out.println (mix.userMessage);
 		mix.mixture();
 	}
@@ -47,7 +49,19 @@ public class Mix {
 					System.out.println ("Final mixed up message: \"" + message+"\"");
 					System.exit(0);
 				case "b":
-					insertbefore(scan.next(), scan.nextInt());
+					String insertMessage = scan.nextLine();
+					int startIndex = 0;
+					int endIndex;
+					for(endIndex = 0; endIndex < insertMessage.length(); endIndex++){
+						if(Character.isDigit(insertMessage.charAt(endIndex)) && endIndex == insertMessage.length() - 1) {
+							startIndex = endIndex;
+							do{
+								startIndex--;
+							}while(Character.isDigit(insertMessage.charAt(startIndex)));
+						}
+					}
+
+					insertbefore(insertMessage.substring(1, startIndex), Integer.parseInt(insertMessage.substring(startIndex + 1, endIndex)));
 					break;
 				case "r":
 					remove(scan.nextInt(), scan.nextInt());
@@ -100,7 +114,9 @@ public class Mix {
 	}
          
 	private void insertbefore(String token, int index) {
-
+		for(int i = 0; i < token.length(); i++) {
+			message.add(token.charAt(i), index + i);
+		}
 	}
 
 	private void DisplayMessage() {
