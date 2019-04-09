@@ -100,7 +100,7 @@ import java.util.Scanner;
 
         public void remove(int start, int stop) {
 
-            for (int i = 0; i < stop - start + 1; i++)
+            for (int i = 0; i < stop - start; i++)
                 message.delete(start);
         }
 
