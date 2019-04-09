@@ -23,4 +23,8 @@ public class NodeCB {
     public void setTopOfClipBoard(NodeD topOfClipBoard) {
         this.topOfClipBoard = topOfClipBoard;
     }
+
+    public NodeCB getNext(){return next;}
+
+    public void setNext(NodeCB next){this.next = next;}
 }
