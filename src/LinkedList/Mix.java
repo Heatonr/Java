@@ -78,6 +78,9 @@ public class Mix {
 				case "h":
 					helpPage();
 					break;
+				case "d":
+					delete(scan.next().charAt(0));
+					break;
 
 					// all the rest of the commands have not been done
                     // No "real" error checking has been done.
@@ -99,7 +102,20 @@ public class Mix {
 
 	private void remove(int start, int stop) {
         for(int i = 0; i <= stop - start; i++)
-            message.delete(start);
+            message.remove(start);
+	}
+
+
+	private void delete(char character){
+		message.cursor = message.top;
+
+		while (message.cursor.next != null){
+			if(message.cursor.data == character){
+				message.cursor = message.cursor.getPrev();
+				message.remove(message.cursor.next);
+			}
+		}
+
 	}
 
 	private void cut(int start, int stop, int clipNum) {
