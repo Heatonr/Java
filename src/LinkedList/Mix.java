@@ -7,7 +7,7 @@ public class Mix {
 
 	private DoubleLinkedList<Character> message;
 	private String undoCommands;
-	private NodeCB clipBoards;
+	private ClipBdLinkedList boardList;
 
 	private String userMessage;
 	private Scanner scan;
@@ -15,7 +15,7 @@ public class Mix {
 	public Mix() {
 		scan = new Scanner(System.in);
 		message = new DoubleLinkedList<Character>();
-		clipBoards = new NodeCB();
+		boardList = new ClipBdLinkedList();
 
 		undoCommands = "";
 	}
@@ -78,9 +78,6 @@ public class Mix {
 				case "h":
 					helpPage();
 					break;
-				case "d":
-					delete(scan.next().charAt(0));
-					break;
 
 					// all the rest of the commands have not been done
                     // No "real" error checking has been done.
@@ -102,42 +99,63 @@ public class Mix {
 
 	private void remove(int start, int stop) {
         for(int i = 0; i <= stop - start; i++)
-            message.remove(start);
-	}
-
-
-	private void delete(char character){
-		message.cursor = message.top;
-
-		while (message.cursor.next != null){
-			if(message.cursor.data == character){
-				message.cursor = message.cursor.getPrev();
-				message.remove(message.cursor.next);
-			}
-		}
-
+            message.delete(start);
 	}
 
 	private void cut(int start, int stop, int clipNum) {
-
+		copy(start, stop, clipNum);
+		remove(start, stop);
 	}
 
 	private void copy(int start, int stop, int clipNum) {
-		NodeCB targetClipboard = clipBoards;
+		NodeCB targetClipboard = boardList.getTop();
 		NodeD currentNode;
-		while(targetClipboard.getClipBoardNumber() != clipNum && targetClipboard.getNext() != null){
+
+		if(targetClipboard == null){
+			currentNode = new NodeD();
+			boardList.add(new NodeCB());
+			boardList.getTop().setClipBoardNumber(clipNum);
+			boardList.getTop().setTopOfClipBoard(currentNode);
+			targetClipboard = boardList.getTop();
+		}
+
+		while (targetClipboard.getClipBoardNumber() != clipNum && targetClipboard.getNext() != null) {
 			targetClipboard = targetClipboard.getNext();
 		}
-		if(targetClipboard.getClipBoardNumber() == clipNum){
+
+		if (targetClipboard.getClipBoardNumber() == clipNum) {
 			currentNode = targetClipboard.getTopOfClipBoard();
+		} else {
+			currentNode = new NodeD();
+			boardList.add(new NodeCB());
+			boardList.getTop().setClipBoardNumber(clipNum);
+			boardList.getTop().setTopOfClipBoard(currentNode);
+			targetClipboard = boardList.getTop();
 		}
-		else{
-			//currentNode
+
+		for(int i = 0; i <= stop - start; i++){
+			targetClipboard.getMyLinkedList().add(message.get(i + start), i);
 		}
 	}
 
 	private void paste( int index, int clipNum) {
+		NodeCB targetClipboard = boardList.getTop();
+		NodeD currentNode;
 
+		while (targetClipboard.getClipBoardNumber() != clipNum && targetClipboard.getNext() != null) {
+			targetClipboard = targetClipboard.getNext();
+		}
+
+		if (targetClipboard.getClipBoardNumber() == clipNum) {
+			currentNode = targetClipboard.myLinkedList.top;
+		}else {
+			return;
+		}
+
+		while(currentNode != null){
+			message.add((Character)currentNode.getData(), ++index - 1);
+			currentNode = currentNode.next;
+		}
 	}
          
 	private void insertbefore(String token, int index) {
