@@ -1,6 +1,4 @@
 package LinkedList;
-
-
     public class DoubleLinkedList<E>  {
         protected NodeD<E> top;      // The first NodeD<E> in the list
 
@@ -33,29 +31,27 @@ package LinkedList;
             else if (cursor.next == null) {
                 cursor.next = new NodeD<E>(item, null, cursor);
             } else {
-                placeHolderNode = cursor.getNext();
-                cursor.next = new NodeD<E>(item, placeHolderNode, cursor);
-                placeHolderNode.prev = cursor.next;
+                cursor.setNext(new NodeD(item, cursor.getNext(), cursor));
             }
         }
-
 
         public void delete(int position){
-            NodeD<E> placeHolderNode;
-
             cursor = top;
-            for(int i = 0; i < position - 1; i++){
+            for(int i = 0; i < position; i++){
                 cursor = cursor.getNext();
             }
-            if (cursor == null || cursor.next == null)
-                return;
+			if(cursor == top){
+				top = cursor.next;
+			}
+            if(cursor.next == null)
+            	return;
+            if(cursor.prev != null)
+            	cursor.prev.next = cursor.next;
+            if(cursor.next != null)
+            	cursor.next.prev = cursor.prev;
 
-            NodeD<E> next = cursor.next.next;
-
-            cursor.next = next;
 
         }
-
 
         public String toString() {
             String retVal = "";

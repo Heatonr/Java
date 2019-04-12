@@ -8,6 +8,16 @@ public class ClipBdLinkedList {
         tail = top = null;
     }
 
+    public NodeCB getTop(){return top;}
+
+    public NodeCB getTail(){return tail;}
+
+    public void add(NodeCB cbToAdd){
+        cbToAdd.setNext(top);
+        top = cbToAdd;
+    }
+
+
     // create methods you need.
 
 }
